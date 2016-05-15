@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>temp</title>
+<meta name="description" content="temp">
+<meta name="keywords" content="temp">
+<style>
+</style>
+</head>
+<body>
+
+<p class="mute">mute</p>
+<p class="notMute">音出す</p>
+
+<script src="./jquery.js"></script>
+<script src="TweenMax.min.js"></script>
+<script>
+
+var gb = {};
+// ------------------------------------------------------------
+//
+//  audio player
+//
+// ------------------------------------------------------------
+(function(){
+
+
+  function Audioplayer(src) {
+
+    this.src = src;
+    this.audio = null;
+
+    this.canplay = false;
+
+
+    this.constructor();
+
+  }
+
+  Audioplayer.prototype.constructor = function(){ 
+
+    var audio,type;
+
+    this.audio = document.createElement("audio")
+    document.body.appendChild(this.audio);
+
+    // type = this.checkAudioFormat(this.audio);
+    this.audio.addEventListener("canplaythrough", this.audioLoaded, false);
+    this.audio.setAttribute("src", this.src);
+
+  }
+
+  Audioplayer.prototype.checkAudioFormat = function(audio) {
+
+    var ext = "";
+
+    if (audio.canPlayType("audio/ogg") == "probably" || audio.canPlayType("audio/ogg") == "maybe") {
+      ext = "ogg";
+    } else if(audio.canPlayType("audio/wav") == "probably" || audio.canPlayType("audio/wav") == "maybe") {
+      ext = "wav";
+    } else if(audio.canPlayType("audio/mp3") == "probably" || audio.canPlayType("audio/mp3") == "maybe") {
+      ext = "mp3";
+    }
+
+    return ext;
+  }
+
+  Audioplayer.prototype.audioLoaded = function() {
+
+    // this.canplay = true;
+    this.play();
+
+  }
+
+  Audioplayer.prototype.play = function(){ 
+
+    this.audio.play();
+
+  }
+
+  Audioplayer.prototype.pause = function(){ 
+
+    this.audio.pause();
+
+  }
+
+  Audioplayer.prototype.updateCurrentTime = function(time){ 
+
+    this.audio.currentTime = time;
+
+  }
+
+  Audioplayer.prototype.getDuration = function(){ 
+
+    return this.audio.duration;
+
+  }
+
+  Audioplayer.prototype.setAutoPlay = function(boolean){ 
+
+    this.audio.autoplay = boolean;
+
+  }
+
+  Audioplayer.prototype.setLoop = function(boolean){ 
+
+    this.audio.loop = boolean;
+
+  }
+
+  Audioplayer.prototype.setRate = function(val){ 
+
+    // デフォルトが1
+    this.audio.playbackRate = val;
+
+  }
+
+  Audioplayer.prototype.tweenVolume = function(val,dur,ease){ 
+
+    // 0.0（無音）～ 1.0（最大）
+
+    var dur = dur || 0.5,
+        ease = ease || Power3.easeOut; 
+
+    TweenMax.to(this.audio, dur, {volume:val, ease: ease});
+
+
+  }
+
+  Audioplayer.prototype.muted = function(boolean){ 
+
+    this.audio.muted = boolean;
+
+
+  }
+
+  // 公開api
+  gb.Audioplayer = Audioplayer;
+
+})();
+
+
+
+
+
+
+//--------------------------------------------------
+//
+//  main
+//
+//--------------------------------------------------
+$(function(){
+
+  var $mute = $('.mute'),
+      $notMute = $('.notMute');
+
+  var sound = new gb.Audioplayer('EasyLove.mp3');
+  sound.updateCurrentTime(100)
+
+  function mute() {
+
+    sound.tweenVolume(0,2);
+    
+  }
+
+  function notMute() {
+
+    sound.tweenVolume(1,3);
+
+  }
+
+
+  function setEvents() {
+
+    $mute.on('click', mute);
+    $notMute.on('click', notMute);
+    
+  }
+
+  function main() {
+
+    setEvents();
+
+  }
+
+  main();
+
+})
+
+
+</script>
+</body>
+</html>

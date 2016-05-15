@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>temp</title>
+<meta name="description" content="temp">
+<meta name="keywords" content="temp">
+<style>
+</style>
+</head>
+<body>
+
+<p>GENERAL AUDIO SERVICE 01</p>
+
+<p>
+Author: Yasuhiro Tsuchiya (http://yasuhirotsuchiya.com/)<br>
+Created: 2008-10-06<br>
+Modified: 2008-10-06<br>
+Licence: Creative Commons Attribution-Share Alike 2.1 Japan<br>
+</p>
+ 
+//alert<br>
+<p class="sound">alert_001.wav</p>
+<p class="sound">alert_002.wav</p>
+<br>
+//basic<br>
+<p class="sound">click.wav</p>
+<p class="sound">grab.wav</p>
+<p class="sound">page.wav</p>
+<p class="sound">tap.wav</p>
+<br>
+//bubble<br>
+<p class="sound">bubble_fast_close.wav</p>
+<p class="sound">bubble_fast_open.wav</p>
+<p class="sound">bubble_slow_close.wav</p>
+<p class="sound">bubble_slow_open.wav</p>
+<br>
+//computer<br>
+<p class="sound">boot_001.wav</p>
+<p class="sound">boot_002.wav</p>
+<br>
+//float<br>
+<p class="sound">float_001.wav</p>
+<p class="sound">float_002.wav</p>
+<br>
+//micro<br>
+<p class="sound">micro_001.wav</p>
+<p class="sound">micro_002.wav</p>
+<p class="sound">micro_003.wav</p>
+<p class="sound">micro_004.wav</p>
+<p class="sound">micro_005.wav</p>
+<p class="sound">micro_006.wav</p>
+<p class="sound">micro_007.wav</p>
+<p class="sound">micro_008.wav</p>
+<p class="sound">micro_009.wav</p>
+<br>
+//select<br>
+<p class="sound">select_001.wav</p>
+<p class="sound">select_002.wav</p>
+<p class="sound">select_003.wav</p>
+<p class="sound">select_004.wav</p>
+<p class="sound">select_005.wav</p>
+
+<p>GENERAL AUDIO SERVICE 02 “material”</p>
+
+<p>
+Author: Yasuhiro Tsuchiya (http://blog.slndesignstudio.com / slnsyndicate@gmail.com)<br>
+Created: 2016-03-29<br>
+Modified: 2016-03-29<br>
+Licence: Creative Commons Attribution-Share Alike 2.1 Japan
+</p>
+
+//softrubber
+<p class="sound02">softrubber_hi.wav</p>
+<p class="sound02">softrubber_lo.wav</p>
+<p class="sound02">softrubber_up_hi.wav</p>
+<p class="sound02">softrubber_up_lo.wav</p>
+<p class="sound02">softrubber_down_hi.wav</p>
+<p class="sound02">softrubber_down_lo.wav</p>
+
+//hardrubber
+<p class="sound02">hardrubber_hi.wav</p>
+<p class="sound02">hardrubber_lo.wav</p>
+<p class="sound02">hardrubber_up_hi.wav</p>
+<p class="sound02">hardrubber_up_lo.wav</p>
+<p class="sound02">hardrubber_down_hi.wav</p>
+<p class="sound02">hardrubber_down_lo.wav</p>
+//matte
+<p class="sound02">matte_hi.wav</p>
+<p class="sound02">matte_lo.wav</p>
+<p class="sound02">matte_up_hi.wav</p>
+<p class="sound02">matte_up_lo.wav</p>
+<p class="sound02">matte_down_hi.wav</p>
+<p class="sound02">matte_down_lo.wav</p>
+//plastic
+<p class="sound02">plastic_hi.wav</p>
+<p class="sound02">plastic_lo.wav</p>
+<p class="sound02">plastic_up_hi.wav</p>
+<p class="sound02">plastic_up_lo.wav</p>
+<p class="sound02">plastic_down_hi.wav</p>
+<p class="sound02">plastic_down_lo.wav</p>
+//glass
+<p class="sound02">glass_hi.wav</p>
+<p class="sound02">glass_lo.wav</p>
+<p class="sound02">glass_up_hi.wav</p>
+<p class="sound02">glass_up_lo.wav</p>
+<p class="sound02">glass_down_hi.wav</p>
+<p class="sound02">glass_down_lo.wav</p>
+
+//metallic
+<p class="sound02">metallic_hi.wav</p>
+<p class="sound02">metallic_lo.wav</p>
+<p class="sound02">metallic_up_hi.wav</p>
+<p class="sound02">metallic_up_lo.wav</p>
+<p class="sound02">metallic_down_hi.wav</p>
+<p class="sound02">metallic_down_lo.wav</p>
+
+
+
+
+
+<script src="./jquery.js"></script>
+<script src="TweenMax.min.js"></script>
+<script>
+
+var gb = {};
+// ------------------------------------------------------------
+//
+//  audio player
+//
+// ------------------------------------------------------------
+(function(){
+
+  function Audioplayer(src) {
+
+    this.src = src;
+
+    this.gainNode = null;
+    this.context = null;
+    this.buffer = null;
+    this.analyser = null;
+    this.audio = null;
+
+    this.constructor();
+
+  }
+
+  Audioplayer.prototype.constructor = function(){ 
+
+    var audio,type;
+
+
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+
+    try {
+        this.context = new AudioContext();
+    } catch (error) {
+        window.alert(error.message);
+        return;
+    }
+
+    if (this.src) this.loadAudio(this.src);
+
+  }
+
+  Audioplayer.prototype.loadAudio = function(src){
+
+      var self = this;
+
+      var req = new XMLHttpRequest();
+      req.open("GET", src, true);
+      req.responseType = "arraybuffer";
+
+      req.onload = function () {
+          
+          var res = req.response;
+          self.context.decodeAudioData(res, function (buf) {
+
+              self.buffer = buf;
+              self.play();
+
+          });
+
+      }
+      req.send();
+
+  }
+
+  Audioplayer.prototype.audioLoaded = function() {
+
+    // this.canplay = true;
+    this.play();
+
+  }
+
+  // 1秒待った後、オーディオバッファの3秒経過した位置から、10秒間再生します。
+  Audioplayer.prototype.play = function(delay, offset, duration){ 
+
+    var delay = delay || 0,
+        offset = offset || 0,
+        duration = duration || this.getDuration();
+
+    this.gainNode = this.context.createGain();
+    this.audio = this.context.createBufferSource();
+
+    this.audio.start = this.audio.start || this.audio.noteOn;
+    this.audio.stop  = this.audio.stop  || this.audio.noteOff;
+
+    this.audio.buffer = this.buffer;
+    this.audio.connect(this.gainNode);
+    this.gainNode.connect(this.context.destination);
+
+    this.audio.start(delay,offset,duration);
+
+  }
+
+  Audioplayer.prototype.pause = function(){ 
+
+    this.context.suspend();
+
+  }
+
+  Audioplayer.prototype.resume = function(){ 
+
+    this.context.resume();
+
+  }
+
+  Audioplayer.prototype.updateCurrentTime = function(delay, offset, duration){ 
+
+    var delay = delay || 0,
+        offset = offset || 0,
+        duration = duration || this.getDuration();
+
+    this.audio.stop();
+    this.play(delay, offset, duration);
+
+  }
+
+  Audioplayer.prototype.getDuration = function(){ 
+
+    return this.buffer.duration;
+
+  }
+
+  Audioplayer.prototype.setLoop = function(boolean){ 
+
+    this.audio.loop = boolean;
+
+  }
+
+  Audioplayer.prototype.setRate = function(val){ 
+
+    // デフォルトが1
+    // this.audio.playbackRate = val;
+
+  }
+
+  Audioplayer.prototype.tweenVolume = function(val,dur,ease){ 
+
+    // 0.0（無音）～ 1.0（最大）
+
+    var dur = dur || 0.5,
+        ease = ease || Power4.easeIn; 
+
+    TweenMax.to(this.gainNode.gain, dur, {value:val, ease: ease});
+
+  }
+
+  Audioplayer.prototype.muted = function(boolean){ 
+
+    // this.audio.muted = boolean;
+
+  }
+
+
+  // 公開api
+  gb.Audioplayer = Audioplayer;
+
+})();
+
+
+//--------------------------------------------------
+//
+//  main
+//
+//--------------------------------------------------
+$(function(){
+
+  var $sound = $('.sound, .sound02');
+
+  var sound = new gb.Audioplayer();
+
+  function onClick() {
+
+    if ($(this).hasClass('sound')) {
+      var src = './sound/sound01/' + $(this).text();  
+    } else {
+      var src = './sound/sound02/' + $(this).text();  
+    }
+
+    sound.loadAudio(src);
+    
+  }
+
+  function setEvents() {
+
+    $sound.on('click', onClick);
+    
+  }
+
+  function main() {
+
+    setEvents();
+
+  }
+
+  main();
+
+})
+
+
+
+</script>
+</body>
+</html>
