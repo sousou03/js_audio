@@ -210,7 +210,10 @@ var gb = {};
     this.audio.connect(this.gainNode);
     this.gainNode.connect(this.context.destination);
 
-    this.audio.start(delay,offset,duration);
+    console.log(this.audio)
+
+    // this.audio.start(delay,offset,duration);
+    this.audio.start();
 
   }
 
@@ -300,6 +303,8 @@ $(function(){
     }
 
     sound.loadAudio(src);
+
+    console.log(2,src);
     
   }
 
